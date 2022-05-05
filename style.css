@@ -1,8 +1,117 @@
 html {
   scroll-behavior: smooth;
+  font-family: monospace;
 }
 
 * {
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: aliceblue;
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.title {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  font-size: 24px;
+}
+
+.textarea {
+  width: 1024px;
+  height: 300px;
+  margin-bottom: 10px;
+  font-size: 20px;
+}
+
+.keyboard {
+  display: flex;
+  flex-direction: column;
+  background-color: rgb(185, 185, 185);
+  border-radius: 5px;
+  width: 1100px;
+  height: 360px;
+  padding: 10px;
+  gap: 10px;
+}
+
+.kb-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.kb-key {
+  background-color: gray;
+  border-radius: 5px;
+  width: 60px;
+  height: 60px;
+  text-align: center;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  line-height: 20px;
+  font-size: 20px;
+  color: white;
+}
+
+.fn {
+  background-color: rgb(20, 20, 20);
+  font-weight: 700;
+}
+
+.backspace {
+  width: 170px;
+}
+
+.capsLock {
+  width: 120px;
+}
+
+.tab {
+  width: 100px;
+}
+
+.del {
+  width: 60px;
+}
+
+.shiftL {
+  width: 150px;
+}
+
+.shiftR {
+  width: 150px;
+}
+
+.ctrlL {
+  width: 90px;
+}
+
+.ctrlR {
+  width: 80px;
+}
+
+.space {
+  width: 470px;
+}
+
+.enter {
+  width: 180px;
+}
+
+.arrowUp, .arrowDown, .arrowLeft, .arrowRight {
+  font-family: sans-serif;
+}
+
+.description {
+  margin-top: 10px;
+  font-size: 20px;
 }
