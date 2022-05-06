@@ -1,10 +1,23 @@
+import i18n from './translate.js';
+
 const keys = document.querySelectorAll('.kb-key');
 const letterKeys = document.querySelectorAll('.key');
 const digits = document.querySelectorAll('.digit');
 const symbolKeys = document.querySelectorAll('.symbol');
 
-let isCapsLocked = false;
+const shiftLeft = document.querySelector('.ShiftLeft');
+const shiftRight = document.querySelector('.ShiftRight');
+const altLeft = document.querySelector('.AltLeft');
+const altRight = document.querySelector('.AltRight');
+
+const textArea = document.querySelector('.textarea');
+
+let isCapsPressed = false;
+let isShiftPressed = false;
+let language = 'en';
+
 document.addEventListener('keydown', (e) => {
+  console.log(e.code);
   // find a pressed key
   const key = document.querySelector(`.${e.code}`);
   // if key not null
@@ -12,11 +25,16 @@ document.addEventListener('keydown', (e) => {
     e.preventDefault();
     key.classList.add('active');
   }
+
+  if (e.repeat) {
+    return;
+  }
   // shift handler
   if (e.code === 'ShiftLeft' || e.code === 'ShiftRight') {
+    isShiftPressed = true;
     digitsToSymbols();
     shiftSymbols();
-    if (!isCapsLocked) {
+    if (!isCapsPressed) {
       lettersToUpper();
     } else {
       lettersToLower();
@@ -25,18 +43,25 @@ document.addEventListener('keydown', (e) => {
 
   // capslock handler
   if (e.code === 'CapsLock') {
-    if(isCapsLocked === false) {
+    if(isCapsPressed === false) {
       lettersToUpper();
-      isCapsLocked = !isCapsLocked;
+      isCapsPressed = !isCapsPressed;
     } else {
       lettersToLower();
-      isCapsLocked = !isCapsLocked;
+      isCapsPressed = !isCapsPressed;
     }
   }
 
-
-
-  console.log(e.code);
+  // translate handler
+  if ((shiftLeft.classList.contains('active') || shiftRight.classList.contains('active')) && (altLeft.classList.contains('active') || altRight.classList.contains('active'))) {
+      if (language === 'en') {
+        language = 'ru';
+      } else {
+        language = 'en';
+      }
+      localStorage.setItem('language',language);
+      translate();
+  }
 })
 
 document.addEventListener('keyup', (e) => {
@@ -46,14 +71,15 @@ document.addEventListener('keyup', (e) => {
     key.classList.remove('active');
   }
 
-  if(e.code === 'CapsLock' && isCapsLocked) {
+  if(e.code === 'CapsLock' && isCapsPressed) {
     key.classList.add('active');
   }
 
   if ((e.code === 'ShiftLeft' || e.code === 'ShiftRight')) {
+    isShiftPressed = false;
     symbolsToDigits();
     unshiftSymbols();
-    if (!isCapsLocked) {
+    if (!isCapsPressed) {
       lettersToLower();
     } else {
       lettersToUpper();
@@ -63,12 +89,21 @@ document.addEventListener('keyup', (e) => {
   console.log(e.code);
 })
 
+window.onload = () => {
+  language = localStorage.getItem('language');
+  translate();
+}
+
+
+
 function lettersToUpper() {
-  letterKeys.forEach(key => key.innerHTML = key.innerHTML.toUpperCase())
+  letterKeys.forEach(key => key.innerHTML = key.innerHTML.toUpperCase());
+  symbolKeys.forEach(key => key.innerHTML = key.innerHTML.toUpperCase());
 }
 
 function lettersToLower() {
-  letterKeys.forEach(key => key.innerHTML = key.innerHTML.toLowerCase())
+  letterKeys.forEach(key => key.innerHTML = key.innerHTML.toLowerCase());
+  symbolKeys.forEach(key => key.innerHTML = key.innerHTML.toLowerCase());
 }
 
 function digitsToSymbols() {
@@ -82,17 +117,16 @@ function digitsToSymbols() {
        eight,
        nine,
        zero] = digits;
-  
-  one.innerHTML = '!';
-  two.innerHTML = '@';
-  three.innerHTML = '#';
-  four.innerHTML = '$';
-  five.innerHTML = '%';
-  six.innerHTML = '^';
-  seven.innerHTML = '&';
-  eight.innerHTML = '*';
-  nine.innerHTML = '(';
-  zero.innerHTML = ')';
+  one.innerHTML = i18n[language].oneShifted;
+  two.innerHTML = i18n[language].twoShifted;
+  three.innerHTML = i18n[language].threeShifted;
+  four.innerHTML = i18n[language].fourShifted;
+  five.innerHTML = i18n[language].fiveShifted;
+  six.innerHTML = i18n[language].sixShifted;
+  seven.innerHTML = i18n[language].sevenShifted;
+  eight.innerHTML = i18n[language].eightShifted;
+  nine.innerHTML = i18n[language].nineShifted;
+  zero.innerHTML = i18n[language].zeroShifted;
 }
 
 function symbolsToDigits() {
@@ -132,17 +166,17 @@ function shiftSymbols() {
     period,
     slash] = symbolKeys;
 
-    backquote.innerHTML = '~';
-    minus.innerHTML = '_';
-    equal.innerHTML = '+';
-    bracketLeft.innerHTML = '{';
-    bracketRight.innerHTML = '}';
-    backslash.innerHTML = '|';
-    semicolon.innerHTML = ':';
-    quote.innerHTML = '"';
-    comma.innerHTML = '<';
-    period.innerHTML = '>';
-    slash.innerHTML = '?';
+    backquote.innerHTML = i18n[language].backquoteShifted;
+    minus.innerHTML = i18n[language].minusShifted;
+    equal.innerHTML = i18n[language].equalShifted;
+    bracketLeft.innerHTML = i18n[language].bracketLeftShifted;
+    bracketRight.innerHTML = i18n[language].bracketRightShifted;
+    backslash.innerHTML = i18n[language].backslashShifted;
+    semicolon.innerHTML = i18n[language].semicolonShifted;
+    quote.innerHTML = i18n[language].quoteShifted;
+    comma.innerHTML = i18n[language].commaShifted;
+    period.innerHTML = i18n[language].periodShifted;
+    slash.innerHTML = i18n[language].slashShifted;
 }
 
 function unshiftSymbols() {
@@ -158,15 +192,31 @@ function unshiftSymbols() {
     period,
     slash] = symbolKeys;
 
-    backquote.innerHTML = '`';
-    minus.innerHTML = '-';
-    equal.innerHTML = '=';
-    bracketLeft.innerHTML = '[';
-    bracketRight.innerHTML = ']';
-    backslash.innerHTML = `\\`;
-    semicolon.innerHTML = ';';
-    quote.innerHTML = '\'';
-    comma.innerHTML = ',';
-    period.innerHTML = '.';
-    slash.innerHTML = '/';
+    backquote.innerHTML = i18n[language].backquote;
+    minus.innerHTML = i18n[language].minus;
+    equal.innerHTML = i18n[language].equal;
+    bracketLeft.innerHTML = i18n[language].bracketLeft;
+    bracketRight.innerHTML = i18n[language].bracketRight;
+    backslash.innerHTML = i18n[language].backslash;
+    semicolon.innerHTML = i18n[language].semicolon;
+    quote.innerHTML = i18n[language].quote;
+    comma.innerHTML = i18n[language].comma;
+    period.innerHTML = i18n[language].period;
+    slash.innerHTML = i18n[language].slash;
+}
+
+function translate() {
+  letterKeys.forEach(key => {
+    key.innerHTML = i18n[language][key.classList[2]];
+  })
+
+  if(isShiftPressed) {
+    shiftSymbols();
+    digitsToSymbols();
+    lettersToUpper();
+  } else {
+    unshiftSymbols();
+    symbolsToDigits();
+    lettersToLower();
+  }
 }
