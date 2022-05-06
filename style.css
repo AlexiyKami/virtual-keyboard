@@ -1,3 +1,7 @@
+:root {
+  --keys-color: gray;
+}
+
 html {
   scroll-behavior: smooth;
   font-family: monospace;
@@ -30,6 +34,9 @@ body {
   height: 300px;
   margin-bottom: 10px;
   font-size: 20px;
+  padding: 10px;
+  border-radius: 10px;
+  resize: vertical;
 }
 
 .keyboard {
@@ -37,8 +44,9 @@ body {
   flex-direction: column;
   background-color: rgb(185, 185, 185);
   border-radius: 5px;
+  border: 2px solid var(--keys-color);
   width: 1100px;
-  height: 360px;
+  height: 364px;
   padding: 10px;
   gap: 10px;
 }
@@ -60,12 +68,35 @@ body {
   line-height: 20px;
   font-size: 20px;
   color: white;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  box-shadow: 2px 3px 5px rgb(44, 44, 44);
+  user-select: none;
 }
+
+.kb-key:hover {
+  background-color: rgb(255, 254, 166);
+  color: black;
+  transition: background-color 0.2s;
+}
+
+.kb-key:active {
+  transform: translate(1px,3px);
+  background-color: rgb(103, 153, 168);
+  transition: background-color 0.1s;
+  box-shadow: 1px 2px 5px rgb(44, 44, 44);
+}
+
+
 
 .fn {
   background-color: rgb(20, 20, 20);
   font-weight: 700;
 }
+
+/* .fn.pressed {
+  background-color: rgb(103, 168, 138);
+} */
 
 .backspace {
   width: 170px;
