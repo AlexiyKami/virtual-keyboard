@@ -67,6 +67,7 @@ body {
   padding-bottom: 20px;
   line-height: 20px;
   font-size: 20px;
+  font-family:Arial, sans-serif;
   color: white;
   cursor: pointer;
   transition: background-color 0.2s;
@@ -80,7 +81,7 @@ body {
   transition: background-color 0.2s;
 }
 
-.kb-key:active {
+.kb-key:active, .kb-key.active {
   transform: translate(1px,3px);
   background-color: rgb(103, 153, 168);
   transition: background-color 0.1s;
@@ -98,47 +99,47 @@ body {
   background-color: rgb(103, 168, 138);
 } */
 
-.backspace {
+.Backspace {
   width: 170px;
 }
 
-.capsLock {
+.CapsLock {
   width: 120px;
 }
 
-.tab {
+.Tab {
   width: 100px;
 }
 
-.del {
+.Delete {
   width: 60px;
 }
 
-.shiftL {
+.ShiftLeft {
   width: 150px;
 }
 
-.shiftR {
+.ShiftRight {
   width: 150px;
 }
 
-.ctrlL {
+.ControlLeft {
   width: 90px;
 }
 
-.ctrlR {
+.ControlRight {
   width: 80px;
 }
 
-.space {
+.Space {
   width: 470px;
 }
 
-.enter {
+.Enter {
   width: 180px;
 }
 
-.arrowUp, .arrowDown, .arrowLeft, .arrowRight {
+.ArrowUp, .ArrowDown, .ArrowLeft, .ArrowRight {
   font-family: sans-serif;
 }
 
