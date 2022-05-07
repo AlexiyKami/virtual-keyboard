@@ -9,19 +9,32 @@ const shiftLeft = document.querySelector('.ShiftLeft');
 const shiftRight = document.querySelector('.ShiftRight');
 const altLeft = document.querySelector('.AltLeft');
 const altRight = document.querySelector('.AltRight');
+const ctrlLeft = document.querySelector('.ControlLeft');
+const ctrlRight = document.querySelector('.ControlRight');
 
 const textArea = document.querySelector('.textarea');
 
 let isCapsPressed = false;
 let isShiftPressed = false;
+let isCtrlPressed = false;
 let isKeyDown = false;
+
 let language = 'en';
+
+let textAreaString = '';
+let copiedText = '';
+let cursorPos = 0;
 
 document.addEventListener('keydown', onKeyDown);
 
 document.addEventListener('keyup', onKeyUp);
 
 keys.forEach(key => key.addEventListener('click', onMouseClick));
+
+textArea.addEventListener('click',() => {
+  cursorPos = textArea.selectionStart;
+  console.log(getSelection());
+});
 
 window.onload = () => {
   language = localStorage.getItem('language');
@@ -31,21 +44,63 @@ window.onload = () => {
 function onKeyDown(e) {
   isKeyDown = true;
   console.log(e.code);
+
   // find a pressed key
   const key = document.querySelector(`.${e.code}`);
+
   // if key not null
   if (key) {
     e.preventDefault();
     key.classList.add('active');
   }
+    // ctrl handler
+    if (e.code === 'ControlLeft' || e.code === 'ControlRight') {
+      if (e.repeat) {
+        return;
+      }
+        isCtrlPressed = true;
+    }
+    if ((ctrlLeft.classList.contains('active') || ctrlRight.classList.contains('active')) && isCtrlPressed) {
+      
+      if(e.code === 'KeyC') {
+        copyString();
+        console.log('copied: '+copiedText);
+        updateTextArea();
+      }
 
+      if(e.code === 'KeyV') {
+        addToString(copiedText);
+        console.log('paste');
+        updateTextArea();
+      }
+
+      if(e.code === 'KeyA') {
+        selectAll();
+      }
+      
+      return;
+    }
+
+  // enter to textarea
   if (!key.classList.contains('fn')) {
-    textArea.textContent += key.textContent;
+    addToString(key.textContent);
+  } else if (key.classList.contains('Enter')) {
+    addToString('\n');
+  } else if (key.classList.contains('Tab')) {
+    addToString('\t');
+  } else if (key.classList.contains('ArrowLeft') ||key.classList.contains('ArrowRight')||key.classList.contains('ArrowUp')||key.classList.contains('ArrowDown')) {
+    addToString(key.textContent);
   }
 
   if (e.code === 'Backspace') {
-    textArea.textContent = textArea.textContent.slice(0, textArea.textContent.length - 1);
+    deleteFromString();
   }
+  if (e.target.classList.contains('Delete')) {
+    deleteFromString(true);
+    console.log('del');
+  }
+
+  updateTextArea();
 
   if (e.repeat) {
     return;
@@ -98,6 +153,11 @@ function onKeyUp(e) {
     key.classList.remove('active');
   }
 
+  if (e.code === 'ControlLeft' || e.code === 'ControlRight') {
+    isCtrlPressed = false;
+    e.target.classList.remove('active');
+  }
+
   if(e.code === 'CapsLock' && isCapsPressed) {
     key.classList.add('active');
   }
@@ -118,14 +178,56 @@ function onKeyUp(e) {
 
 function onMouseClick(e) {
   console.log(e.target.textContent + '   **mouse');
+
+    // ctrl handler
+    if (e.target.classList.contains('ControlLeft') || e.target.classList.contains('ControlRight')) {
+      if (!isCtrlPressed) {
+        isCtrlPressed = true;
+        e.target.classList.add('active');
+      } else {
+        isCtrlPressed = false;
+        e.target.classList.remove('active');
+      }
+    }
+    if (isCtrlPressed) {
+      if(e.target.classList.contains('KeyC')) {
+        copyString();
+        console.log('copied: '+copiedText)
+      }
+
+      if(e.target.classList.contains('KeyV')) {
+        addToString(copiedText);
+        console.log('paste')
+      }
+
+      if(e.target.classList.contains('KeyA')) {
+        selectAll();
+      }
+      updateTextArea();
+      return;
+    }
+
+  // enter to textarea
   if (!e.target.classList.contains('fn')) {
-    textArea.textContent += e.target.textContent;
+    addToString(e.target.textContent);
+  } else if (e.target.classList.contains('Enter')) {
+    addToString('\n');
+  } else if (e.target.classList.contains('Tab')) {
+    addToString('\t');
+  } else if (e.target.classList.contains('ArrowLeft') || e.target.classList.contains('ArrowRight')|| e.target.classList.contains('ArrowUp')|| e.target.classList.contains('ArrowDown')) {
+    addToString(e.target.textContent);
   }
 
   if (e.target.classList.contains('Backspace')) {
-    textArea.textContent = textArea.textContent.slice(0, textArea.textContent.length - 1);
+    deleteFromString();
   }
 
+  if (e.target.classList.contains('Delete')) {
+    deleteFromString(true);
+    console.log('del');
+  }
+
+  updateTextArea();
   // shift handler
   if ((e.target.classList.contains('ShiftLeft') || e.target.classList.contains('ShiftRight')) && !isKeyDown) {
     if (!isShiftPressed) {
@@ -312,4 +414,63 @@ function translate() {
     symbolsToDigits();
     lettersToLower();
   }
+}
+
+function updateTextArea() {
+  if (cursorPos < 0) {
+    cursorPos = 0;
+  }
+
+  if (cursorPos > textAreaString.length) {
+    cursorPos = textAreaString.length;
+  }
+
+  console.log('string: ' + textAreaString);
+  textArea.textContent = textAreaString;
+  textArea.selectionStart = cursorPos;
+  textArea.focus();
+  console.log('cursor: ' + cursorPos);
+  
+}
+
+function addToString(text) {
+  let diff = getSelection().end - getSelection().start;
+  if (diff !== 0) {
+    deleteFromString();
+  }
+  console.log('text: '+ text);
+  textAreaString = textAreaString.substring(0,cursorPos) + text + textAreaString.substring(cursorPos);
+  cursorPos += text.length;
+}
+
+function deleteFromString(del) {
+  if (del) {
+    textAreaString = textAreaString.substring(0,getSelection().start ) + textAreaString.substring(getSelection().end +1);
+    return;
+  }
+  let diff = getSelection().end - getSelection().start;
+  if (diff === 0) {
+    textAreaString = textAreaString.substring(0,getSelection().start - 1) + textAreaString.substring(getSelection().end);
+    cursorPos--;
+  } else {
+    textAreaString = textAreaString.substring(0,getSelection().start) + textAreaString.substring(getSelection().end);
+    cursorPos = cursorPos - (getSelection().end - getSelection().start) + diff;
+  }
+  
+}
+
+function getSelection() {
+  return {
+    start: textArea.selectionStart,
+    end: textArea.selectionEnd
+  }
+}
+
+function selectAll() {
+  textArea.selectionStart = 0;
+  textArea.selectionEnd = textAreaString.length;
+}
+
+function copyString() {
+  copiedText = textAreaString.substring(getSelection().start, getSelection().end);
 }
