@@ -14,9 +14,22 @@ const textArea = document.querySelector('.textarea');
 
 let isCapsPressed = false;
 let isShiftPressed = false;
+let isKeyDown = false;
 let language = 'en';
 
-document.addEventListener('keydown', (e) => {
+document.addEventListener('keydown', onKeyDown);
+
+document.addEventListener('keyup', onKeyUp);
+
+keys.forEach(key => key.addEventListener('click', onMouseClick));
+
+window.onload = () => {
+  language = localStorage.getItem('language');
+  translate();
+}
+
+function onKeyDown(e) {
+  isKeyDown = true;
   console.log(e.code);
   // find a pressed key
   const key = document.querySelector(`.${e.code}`);
@@ -24,6 +37,14 @@ document.addEventListener('keydown', (e) => {
   if (key) {
     e.preventDefault();
     key.classList.add('active');
+  }
+
+  if (!key.classList.contains('fn')) {
+    textArea.textContent += key.textContent;
+  }
+
+  if (e.code === 'Backspace') {
+    textArea.textContent = textArea.textContent.slice(0, textArea.textContent.length - 1);
   }
 
   if (e.repeat) {
@@ -50,6 +71,11 @@ document.addEventListener('keydown', (e) => {
       lettersToLower();
       isCapsPressed = !isCapsPressed;
     }
+    if ((isCapsPressed && isShiftPressed) || (!isCapsPressed && !isShiftPressed)) {
+      lettersToLower();
+    } else {
+      lettersToUpper();
+    }
   }
 
   // translate handler
@@ -62,9 +88,10 @@ document.addEventListener('keydown', (e) => {
       localStorage.setItem('language',language);
       translate();
   }
-})
+}
 
-document.addEventListener('keyup', (e) => {
+function onKeyUp(e) {
+  isKeyDown = false;
   const key = document.querySelector(`.${e.code}`);
 
   if (key) {
@@ -87,14 +114,80 @@ document.addEventListener('keyup', (e) => {
   }
 
   console.log(e.code);
-})
-
-window.onload = () => {
-  language = localStorage.getItem('language');
-  translate();
 }
 
+function onMouseClick(e) {
+  console.log(e.target.textContent + '   **mouse');
+  if (!e.target.classList.contains('fn')) {
+    textArea.textContent += e.target.textContent;
+  }
 
+  if (e.target.classList.contains('Backspace')) {
+    textArea.textContent = textArea.textContent.slice(0, textArea.textContent.length - 1);
+  }
+
+  // shift handler
+  if ((e.target.classList.contains('ShiftLeft') || e.target.classList.contains('ShiftRight')) && !isKeyDown) {
+    if (!isShiftPressed) {
+      isShiftPressed = true;
+      digitsToSymbols();
+      shiftSymbols();
+      if (!isCapsPressed) {
+        lettersToUpper();
+      } else {
+        lettersToLower();
+      }
+      e.target.classList.add('active');
+    } else {
+      isShiftPressed = false;
+      symbolsToDigits();
+      unshiftSymbols();
+      if (!isCapsPressed) {
+        lettersToLower();
+      } else {
+        lettersToUpper();
+      }
+      shiftLeft.classList.remove('active');
+      shiftRight.classList.remove('active');
+    }
+  }
+
+  // capslock handler
+  if (e.target.classList.contains('CapsLock')) {
+    if(isCapsPressed === false) {
+      lettersToUpper();
+      isCapsPressed = !isCapsPressed;
+      e.target.classList.add('active');
+    } else {
+      lettersToLower();
+      isCapsPressed = !isCapsPressed;
+      e.target.classList.remove('active');
+    }
+    if ((isCapsPressed && isShiftPressed) || (!isCapsPressed && !isShiftPressed)) {
+      lettersToLower();
+    } else {
+      lettersToUpper();
+    }
+  }
+
+  // translate handler
+  if ((shiftLeft.classList.contains('active') || shiftRight.classList.contains('active')) && e.target.classList.contains('AltLeft') || e.target.classList.contains('AltRight')) {
+      if (language === 'en') {
+        language = 'ru';
+      } else {
+        language = 'en';
+      }
+      if (!isKeyDown) {
+        isShiftPressed = false;
+        shiftLeft.classList.remove('active');
+        shiftRight.classList.remove('active');
+      }
+      altLeft.classList.remove('active');
+      altRight.classList.remove('active');
+      localStorage.setItem('language',language);
+      translate();
+  }
+}
 
 function lettersToUpper() {
   letterKeys.forEach(key => key.innerHTML = key.innerHTML.toUpperCase());
@@ -210,7 +303,7 @@ function translate() {
     key.innerHTML = i18n[language][key.classList[2]];
   })
 
-  if(isShiftPressed) {
+  if((isShiftPressed && !isCapsPressed) || (!isShiftPressed && isCapsPressed)) {
     shiftSymbols();
     digitsToSymbols();
     lettersToUpper();
