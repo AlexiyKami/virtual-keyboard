@@ -483,6 +483,6 @@ textArea.addEventListener('click', () => {
 });
 
 window.onload = () => {
-  language = localStorage.getItem('language');
+  language = localStorage.getItem('language') || language;
   translate();
 };
