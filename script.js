@@ -33,7 +33,6 @@ keys.forEach(key => key.addEventListener('click', onMouseClick));
 
 textArea.addEventListener('click',() => {
   cursorPos = textArea.selectionStart;
-  console.log(getSelection());
 });
 
 window.onload = () => {
@@ -43,7 +42,6 @@ window.onload = () => {
 
 function onKeyDown(e) {
   isKeyDown = true;
-  console.log(e.code);
 
   // find a pressed key
   const key = document.querySelector(`.${e.code}`);
@@ -64,18 +62,24 @@ function onKeyDown(e) {
       
       if(e.code === 'KeyC') {
         copyString();
-        console.log('copied: '+copiedText);
         updateTextArea();
       }
 
       if(e.code === 'KeyV') {
         addToString(copiedText);
-        console.log('paste');
         updateTextArea();
       }
 
       if(e.code === 'KeyA') {
         selectAll();
+      }
+
+      if(e.code === 'KeyX') {
+        if((getSelection().end - getSelection().start) !== 0) {
+          copyString();
+          deleteFromString();
+          updateTextArea();
+        }
       }
       
       return;
@@ -97,7 +101,6 @@ function onKeyDown(e) {
   }
   if (key.classList.contains('Delete')) {
     deleteFromString(true);
-    console.log('del');
   }
 
   updateTextArea();
@@ -172,13 +175,9 @@ function onKeyUp(e) {
       lettersToUpper();
     }
   }
-
-  console.log(e.code);
 }
 
 function onMouseClick(e) {
-  console.log(e.target.textContent + '   **mouse');
-
     // ctrl handler
     if (e.target.classList.contains('ControlLeft') || e.target.classList.contains('ControlRight')) {
       if (!isCtrlPressed) {
@@ -192,16 +191,18 @@ function onMouseClick(e) {
     if (isCtrlPressed) {
       if(e.target.classList.contains('KeyC')) {
         copyString();
-        console.log('copied: '+copiedText)
       }
 
       if(e.target.classList.contains('KeyV')) {
         addToString(copiedText);
-        console.log('paste')
       }
 
       if(e.target.classList.contains('KeyA')) {
         selectAll();
+      }
+      if(e.target.classList.contains('KeyX')) {
+        copyString();
+        deleteFromString();
       }
       updateTextArea();
       return;
@@ -224,7 +225,6 @@ function onMouseClick(e) {
 
   if (e.target.classList.contains('Delete')) {
     deleteFromString(true);
-    console.log('del');
   }
 
   updateTextArea();
@@ -425,12 +425,10 @@ function updateTextArea() {
     cursorPos = textAreaString.length;
   }
 
-  console.log('string: ' + textAreaString);
   textArea.textContent = textAreaString;
   textArea.selectionStart = cursorPos;
+
   textArea.focus();
-  console.log('cursor: ' + cursorPos);
-  
 }
 
 function addToString(text) {
@@ -438,7 +436,6 @@ function addToString(text) {
   if (diff !== 0) {
     deleteFromString();
   }
-  console.log('text: '+ text);
   textAreaString = textAreaString.substring(0,cursorPos) + text + textAreaString.substring(cursorPos);
   cursorPos += text.length;
 }
