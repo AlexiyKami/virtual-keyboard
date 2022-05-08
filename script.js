@@ -95,7 +95,7 @@ function onKeyDown(e) {
   if (e.code === 'Backspace') {
     deleteFromString();
   }
-  if (e.target.classList.contains('Delete')) {
+  if (key.classList.contains('Delete')) {
     deleteFromString(true);
     console.log('del');
   }
