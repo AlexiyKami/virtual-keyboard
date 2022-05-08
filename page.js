@@ -32,7 +32,7 @@ const page = `<div class="wrapper">
     <div class="kb-key key KeyP">p</div>
     <div class="kb-key symbol BracketLeft">[</div>
     <div class="kb-key symbol BracketRight">]</div>
-    <div class="kb-key symbol Backslash">\</div>
+    <div class="kb-key symbol Backslash">\\</div>
     <div class="kb-key Delete fn">Del</div>
   </div>
   <div class="kb-row">
