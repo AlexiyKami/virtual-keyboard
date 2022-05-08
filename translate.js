@@ -22,7 +22,7 @@ const i18n = {
     nineShifted: '(',
     zero: '0',
     zeroShifted: ')',
-    minus : '-',
+    minus: '-',
     minusShifted: '_',
     equal: '=',
     equalShifted: '+',
@@ -67,7 +67,7 @@ const i18n = {
     period: '.',
     periodShifted: '>',
     slash: '/',
-    slashShifted: '?'
+    slashShifted: '?',
   },
   ru: {
     backquote: 'ё',
@@ -92,7 +92,7 @@ const i18n = {
     nineShifted: '(',
     zero: '0',
     zeroShifted: ')',
-    minus : '-',
+    minus: '-',
     minusShifted: '_',
     equal: '=',
     equalShifted: '+',
@@ -137,8 +137,8 @@ const i18n = {
     period: 'ю',
     periodShifted: 'Ю',
     slash: '.',
-    slashShifted: ','
-  }
-}
+    slashShifted: ',',
+  },
+};
 
 export default i18n;
