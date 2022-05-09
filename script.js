@@ -1,4 +1,145 @@
-import i18n from './translate.js';
+const i18n = {
+  en: {
+    backquote: '`',
+    backquoteShifted: '~',
+    one: '1',
+    oneShifted: '!',
+    two: '2',
+    twoShifted: '@',
+    three: '3',
+    threeShifted: '#',
+    four: '4',
+    fourShifted: '$',
+    five: '5',
+    fiveShifted: '%',
+    six: '6',
+    sixShifted: '^',
+    seven: '7',
+    sevenShifted: '&',
+    eight: '8',
+    eightShifted: '*',
+    nine: '9',
+    nineShifted: '(',
+    zero: '0',
+    zeroShifted: ')',
+    minus: '-',
+    minusShifted: '_',
+    equal: '=',
+    equalShifted: '+',
+    KeyQ: 'q',
+    KeyW: 'w',
+    KeyE: 'e',
+    KeyR: 'r',
+    KeyT: 't',
+    KeyY: 'y',
+    KeyU: 'u',
+    KeyI: 'i',
+    KeyO: 'o',
+    KeyP: 'p',
+    bracketLeft: '[',
+    bracketLeftShifted: '{',
+    bracketRight: ']',
+    bracketRightShifted: '}',
+    backslash: '\\',
+    backslashShifted: '|',
+    KeyA: 'a',
+    KeyS: 's',
+    KeyD: 'd',
+    KeyF: 'f',
+    KeyG: 'g',
+    KeyH: 'h',
+    KeyJ: 'j',
+    KeyK: 'k',
+    KeyL: 'l',
+    semicolon: ';',
+    semicolonShifted: ':',
+    quote: '\'',
+    quoteShifted: '"',
+    KeyZ: 'z',
+    KeyX: 'x',
+    KeyC: 'c',
+    KeyV: 'v',
+    KeyB: 'b',
+    KeyN: 'n',
+    KeyM: 'm',
+    comma: ',',
+    commaShifted: '<',
+    period: '.',
+    periodShifted: '>',
+    slash: '/',
+    slashShifted: '?',
+  },
+  ru: {
+    backquote: 'ё',
+    backquoteShifted: 'Ё',
+    one: '1',
+    oneShifted: '!',
+    two: '2',
+    twoShifted: '"',
+    three: '3',
+    threeShifted: '№',
+    four: '4',
+    fourShifted: ';',
+    five: '5',
+    fiveShifted: '%',
+    six: '6',
+    sixShifted: ':',
+    seven: '7',
+    sevenShifted: '?',
+    eight: '8',
+    eightShifted: '*',
+    nine: '9',
+    nineShifted: '(',
+    zero: '0',
+    zeroShifted: ')',
+    minus: '-',
+    minusShifted: '_',
+    equal: '=',
+    equalShifted: '+',
+    KeyQ: 'й',
+    KeyW: 'ц',
+    KeyE: 'у',
+    KeyR: 'к',
+    KeyT: 'е',
+    KeyY: 'н',
+    KeyU: 'г',
+    KeyI: 'ш',
+    KeyO: 'щ',
+    KeyP: 'з',
+    bracketLeft: 'х',
+    bracketLeftShifted: 'Х',
+    bracketRight: 'ъ',
+    bracketRightShifted: 'Ъ',
+    backslash: '\\',
+    backslashShifted: '|',
+    KeyA: 'ф',
+    KeyS: 'ы',
+    KeyD: 'в',
+    KeyF: 'а',
+    KeyG: 'п',
+    KeyH: 'р',
+    KeyJ: 'о',
+    KeyK: 'л',
+    KeyL: 'д',
+    semicolon: 'ж',
+    semicolonShifted: 'Ж',
+    quote: 'э',
+    quoteShifted: 'Э',
+    KeyZ: 'я',
+    KeyX: 'ч',
+    KeyC: 'с',
+    KeyV: 'м',
+    KeyB: 'и',
+    KeyN: 'т',
+    KeyM: 'ь',
+    comma: 'б',
+    commaShifted: 'Б',
+    period: 'ю',
+    periodShifted: 'Ю',
+    slash: '.',
+    slashShifted: ',',
+  },
+};
 
 const keys = document.querySelectorAll('.kb-key');
 const letterKeys = document.querySelectorAll('.key');
@@ -225,15 +366,13 @@ function copyString() {
 function onKeyDown(e) {
   isKeyDown = true;
 
-  // find a pressed key
   const key = document.querySelector(`.${e.code}`);
 
-  // if key not null
   if (key) {
     e.preventDefault();
     key.classList.add('active');
   }
-  // ctrl handler
+
   if (e.code === 'ControlLeft' || e.code === 'ControlRight') {
     if (e.repeat) {
       return;
@@ -266,7 +405,6 @@ function onKeyDown(e) {
     return;
   }
 
-  // enter to textarea
   if (!key.classList.contains('fn')) {
     addToString(key.textContent);
   } else if (key.classList.contains('Enter')) {
@@ -289,7 +427,6 @@ function onKeyDown(e) {
   if (e.repeat) {
     return;
   }
-  // shift handler
   if (e.code === 'ShiftLeft' || e.code === 'ShiftRight') {
     isShiftPressed = true;
     digitsToSymbols();
@@ -301,7 +438,6 @@ function onKeyDown(e) {
     }
   }
 
-  // capslock handler
   if (e.code === 'CapsLock') {
     if (isCapsPressed === false) {
       lettersToUpper();
@@ -317,7 +453,6 @@ function onKeyDown(e) {
     }
   }
 
-  // translate handler
   if ((shiftLeft.classList.contains('active') || shiftRight.classList.contains('active')) && (altLeft.classList.contains('active') || altRight.classList.contains('active'))) {
     if (language === 'en') {
       language = 'ru';
@@ -359,7 +494,6 @@ function onKeyUp(e) {
 }
 
 function onMouseClick(e) {
-  // ctrl handler
   if (e.target.classList.contains('ControlLeft') || e.target.classList.contains('ControlRight')) {
     if (!isCtrlPressed) {
       isCtrlPressed = true;
@@ -389,7 +523,6 @@ function onMouseClick(e) {
     return;
   }
 
-  // enter to textarea
   if (!e.target.classList.contains('fn')) {
     addToString(e.target.textContent);
   } else if (e.target.classList.contains('Enter')) {
@@ -409,7 +542,7 @@ function onMouseClick(e) {
   }
 
   updateTextArea();
-  // shift handler
+
   if ((e.target.classList.contains('ShiftLeft') || e.target.classList.contains('ShiftRight')) && !isKeyDown) {
     if (!isShiftPressed) {
       isShiftPressed = true;
@@ -435,7 +568,6 @@ function onMouseClick(e) {
     }
   }
 
-  // capslock handler
   if (e.target.classList.contains('CapsLock')) {
     if (isCapsPressed === false) {
       lettersToUpper();
@@ -453,7 +585,6 @@ function onMouseClick(e) {
     }
   }
 
-  // translate handler
   if ((shiftLeft.classList.contains('active') || shiftRight.classList.contains('active')) && (e.target.classList.contains('AltLeft') || e.target.classList.contains('AltRight'))) {
     if (language === 'en') {
       language = 'ru';
